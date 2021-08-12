@@ -1,0 +1,20 @@
+#funciona{
+    margin-left: 700px;
+   
+}
+
+#stage{
+    margin-top: -240px;
+    border: 2px solid black;
+}
+
+#imagem{
+    margin-left: 230px;
+    border: 2px solid black;
+}
+
+p{
+    margin-left: 130px;
+    font-size: 20px;
+    font-family: cursive;
+}

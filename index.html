@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Jogo da Cobrinha</title>
+	<link rel="stylesheet" type="text/css" href="estilo.css" media="screen"/>
+
+</head>
+<body>
+
+	<div id="funciona">
+		<br>
+		<p>Para controlar a cobrinha(quadradinho azul), use as seguintes teclas:</p>
+		<img src="img/teclas.jpg" id="imagem"> 
+	</div>
+	<canvas id="stage" width="600" height="600"></canvas> 
+    <!--Seria o palco, o quadro que a cobrinha vai percorrer-->
+	<script type="text/javascript">
+		
+        //Quando a janela carregar será chamanda uma função, que seria o jogo.
+		window.onload = function(){
+
+			var stage = document.getElementById('stage'); //O palco foi declarado e inicializado
+			var context = stage.getContext("2d"); //Aqui ocorrerá a renderização do canvas, no caso a parte gráfica
+			
+            document.addEventListener("keydown", keyPush); //Aqui é esperado um evento, no caso a estrutura do jogo
+			setInterval(game, 60); //setInterval define um intervalo para aquela determinada função ser chamada
+            
+
+			const velocidade = 1;
+			//A velocidade seria quantas casas a cobrinha vai andar quando o jogo for iniciado
+
+			//Declarando as variáveis para montar a entratégia
+			var vx = vy = 0;  //Velocidade x e y declarada estando em 0
+			var px =10; //A cobrinha inicia no ponto x
+			var py = 15; //E vai em direção ao ponto y
+			var tp = 30; //tamanho da peça
+			var qp = 20; //quantidade de peças
+			var ax=ay=15; //Posição inicial do obstáculo
+
+			var trail = []; //trail é equivalente a rastro, aqui inicia vazio porque ainda não existe rastro
+			tail = 5; //O tamanho da cobrinha é de 5 quadradinhos
+
+			function game(){
+				px += vx; //px é a posição da cabeça da cobra e ela vai receber a velocidade x
+				py += vy;
+
+				if (px <0) {
+					px = qp-1;
+				}
+				//Se a cobrinha for na lateral, ela sairá no outro lado
+
+				if (px > qp-1) {
+					px = 0;
+				}
+				//Se a cobrinha for maior que a quantidade de peças o px será zerado
+
+				if (py < 0) {
+					py = qp-1;
+				}
+				//Se py for menor que 0, ele vai receber quantidade de peças -1
+
+				if (py > qp-1) {
+					py = 0;
+				}
+				//Se py for maior que quantidade de peças-1, ele voltará a ser igual a 0
+
+                
+				context.fillStyle = "gray"; //Aqui estamos definindo a cor do palco
+				context.fillRect(0,0, stage.width, stage.height); //Aqui estamos dizendo que essa cor vai preencher todo o palco
+
+				context.fillStyle = "red"; //Aqui é a definição da cor do obstáculo que será comido
+				context.fillRect(ax*tp, ay*tp, tp,tp); //Organizando a posição do obstáculo no palco
+
+				context.fillStyle = "blue"; //Aqui será a cor da cobra
+				
+                for (var i = 0; i < trail.length; i++) {
+					context.fillRect(trail[i].x*tp, trail[i].y*tp, tp-1,tp-1); //Verificando se existe um rastro no trail para ir pintando
+					
+					if (trail[i].x == px && trail[i].y == py) //Dar Game Over caso a cobrinha bata nela mesma
+					{
+						vx = vy=0;
+						tail =5;
+					}
+				}
+
+				trail.push({x:px,y:py }) //Foi criado um elemento x anteriormente e aqui levamos em conta que se caso não bateu na própria calda, o jogo pode continuar
+				
+				//Se o tamanho do rastro tiver maior que o tamanho da calda o primeiro elemento do array será retirado(usando o shift)
+				while (trail.length > tail) {
+					trail.shift();
+				}
+
+				//Se a posição x da maçã for igual a posição x da cabeça e a posição y da maçã for igual a posição da cabeça da cobra o taill++; vai colocar mais um elemento;
+
+				if (ax==px && ay==py){
+					tail++;
+					ax = Math.floor(Math.random()*qp); //Arredonda pra baixo
+					ay = Math.floor(Math.random()*qp); //Quando utilizamos esse método, estamos posicionando a nossa maçã pra outro lugar do tabuleiro
+				}
+
+			}
+
+			function keyPush(event){
+
+				//verificando qual é ocódigo do evento = event.keyCode
+				switch (event.keyCode) {
+					//37 é a tecla da esquerda
+					case 37: 
+						vx = -velocidade;
+						vy = 0;
+						break;
+					//38 é a tecla para cima
+					case 38: 
+						vx = 0;
+						vy = -velocidade;
+						break;
+					//39 é a tecla para direita
+					case 39: 
+						vx = velocidade;
+						vy = 0;
+						break;
+					//40 é a tecla para baixo
+					case 40: 
+						vx = 0;
+						vy = velocidade;
+						break;			
+					default:
+						
+						break;
+				}
+
+
+			}
+
+		}
+
+	</script>
+</body>
+</html>
